@@ -16,3 +16,5 @@ def delete_comment(request, comment_pk):
     comment.delete()
     return redirect('crawlings:index')
 
+def search(request):
+    keyword = request.POST.get('name')

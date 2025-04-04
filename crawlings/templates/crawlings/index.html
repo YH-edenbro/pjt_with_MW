@@ -10,4 +10,14 @@
 </form>
 
 <h2>{{ comments.company}} ({{ comments.company_code }})</h2>
+<ul><span>수집된 댓글:</span>
+    {% for comment in comments %}
+    {% if comment.pk < 16 %}
+    <form action="{% url "crawlings:delete" comment.pk %}" method="POST">
+    <li>{{ comment.commnet }}</li>
+    <input type="submit" value='삭제'>
+    </form>
+    {% endif %}
+    {% endfor %}
+</ul>
 {% endblock content %}
