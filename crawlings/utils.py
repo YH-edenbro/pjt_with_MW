@@ -124,5 +124,3 @@ def crawl_tossinvest_opinions(search_keyword: str):
             result_file.write(f"{idx}. {title}\n")
 
     driver.quit()
-
-crawl_tossinvest_opinions("삼성전자")
