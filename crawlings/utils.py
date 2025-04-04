@@ -11,12 +11,13 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.action_chains import ActionChains
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
+from .models import Jusik
 
 def crawl_tossinvest_opinions(search_keyword: str):
 
     # 크롬 드라이버 세팅
     options = Options()
-    options.add_argument("--start-maximized")
+    options.add_argument("--headless=new")
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     wait = WebDriverWait(driver, 10)
 
@@ -31,7 +32,7 @@ def crawl_tossinvest_opinions(search_keyword: str):
     
     # 검색어 입력
     actions = ActionChains(driver)
-    actions.send_keys("삼성전자")
+    actions.send_keys(search_keyword)
     actions.send_keys(Keys.ENTER)  # 엔터도 같이 누르기
     actions.perform()
 
@@ -80,14 +81,8 @@ def crawl_tossinvest_opinions(search_keyword: str):
     
         
         if title is not None:
-            company = title[0].get_text().strip()
-            company_code = title[1].get_text().strip()
-
-
-
-
-
-
+            stock_name = title[0].get_text().strip()
+            stock_code = title[1].get_text().strip()
 
 
     while time.time() - start_time < duration:
@@ -110,17 +105,16 @@ def crawl_tossinvest_opinions(search_keyword: str):
             if title is not None:
                 title_text = title.get_text().strip()
                 real_post_time = post_time[1].get_text().strip()
-                titles.append([company,company_code,title_text,real_post_time])
-
-
-    # 3초 대기 (변화 확인용)
-    time.sleep(1)
-       # 5) 페이지의 HTML 소스 가져오기
-
-
-    # 8) 추출한 결과 제목들을 별도의 txt 파일에 저장
-    with open("result.csv", "w", encoding="utf-8") as result_file:
-        for idx, title in enumerate(titles, 1):
-            result_file.write(f"{idx}. {title}\n")
+        if not Jusik.objects.filter(
+            company=stock_name,
+            company_code=stock_code,
+            comment=title_text
+            ).exists():
+                Jusik.objects.create(
+                    company=stock_name,
+                    company_code=stock_code,
+                    comment=title_text,
+                    created_at=real_post_time
+                )
 
     driver.quit()

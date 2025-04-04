@@ -17,4 +17,6 @@ def delete_comment(request, comment_pk):
     return redirect('crawlings:index')
 
 def search(request):
-    keyword = request.POST.get('name')
+    keyword = request.GET.get('name')
+    crawl_tossinvest_opinions(keyword)
+    return redirect('crawlings:index')
