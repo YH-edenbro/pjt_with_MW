@@ -6,7 +6,8 @@ from .utils import crawl_tossinvest_opinions
 def index(request):
     comments = Jusik.objects.all()
     context ={
-        'comments': comments
+        'comments': comments,
+        'company': comments[0],
     }
     return render(request, 'crawlings/index.html', context)
 
@@ -17,6 +18,6 @@ def delete_comment(request, comment_pk):
     return redirect('crawlings:index')
 
 def search(request):
-    keyword = request.GET.get('name')
+    keyword = request.POST.get('company')
     crawl_tossinvest_opinions(keyword)
     return redirect('crawlings:index')

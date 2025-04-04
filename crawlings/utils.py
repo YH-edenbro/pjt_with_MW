@@ -68,8 +68,6 @@ def crawl_tossinvest_opinions(search_keyword: str):
     # 7) 검색 결과에서 제목 추출
     results = soup.select("div._1sivumi0")
     cnt = 0
-    if results :
-        print("results ok")
     for result in results:
         # if result:
             # print(result)
