@@ -54,8 +54,41 @@ def crawl_tossinvest_opinions(search_keyword: str):
     duration = 10  # 5초 동안만 스크롤
     titles = []  # 결과 제목을 저장할 리스트
     cnt = 0
+    
 
     # 처음 주식 코드 추출
+    time.sleep(1)
+
+    html = driver.page_source
+
+    # 6) BeautifulSoup 객체 생성(파서: html.parser)
+    soup = BeautifulSoup(html, "html.parser")
+
+    # 7) 검색 결과에서 제목 추출
+    results = soup.select("div._1sivumi0")
+    cnt = 0
+    if results :
+        print("results ok")
+    for result in results:
+        # if result:
+            # print(result)
+        # print(result)
+        cnt += 1
+        title = result.select("span.tw-1r5dc8g0")
+        # company_title = result.select_one("span.")
+
+    
+        
+        if title is not None:
+            company = title[0].get_text().strip()
+            company_code = title[1].get_text().strip()
+
+
+
+
+
+
+
 
     while time.time() - start_time < duration:
         driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.END)
@@ -68,26 +101,25 @@ def crawl_tossinvest_opinions(search_keyword: str):
         # 7) 검색 결과에서 제목 추출
         results = soup.select("div.xdogm45")
         cnt = 0
-        if results :
-            print("result ok")
         for result in results:
             # print(result)
             cnt += 1
             title = result.select_one("span._60z0ev0")
+            post_time = result.select("span.tw-1r5dc8g0")
             
             if title is not None:
                 title_text = title.get_text().strip()
-                titles.append(title_text)
-        print(cnt)
+                real_post_time = post_time[1].get_text().strip()
+                titles.append([company,company_code,title_text,real_post_time])
 
 
     # 3초 대기 (변화 확인용)
-    time.sleep(3)
+    time.sleep(1)
        # 5) 페이지의 HTML 소스 가져오기
 
 
     # 8) 추출한 결과 제목들을 별도의 txt 파일에 저장
-    with open("04_result.txt", "w", encoding="utf-8") as result_file:
+    with open("result.csv", "w", encoding="utf-8") as result_file:
         for idx, title in enumerate(titles, 1):
             result_file.write(f"{idx}. {title}\n")
 
