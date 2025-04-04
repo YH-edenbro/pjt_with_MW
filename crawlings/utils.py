@@ -51,28 +51,54 @@ def crawl_tossinvest_opinions(search_keyword: str):
 
     # 스크롤 시작 시간 기록
     start_time = time.time()
-    duration = 5  # 5초 동안만 스크롤
+    duration = 10  # 5초 동안만 스크롤
+    titles = []  # 결과 제목을 저장할 리스트
+    cnt = 0
+
+    # 처음 주식 코드 추출
+
+
+
+
+
+
+
+
+
 
     while time.time() - start_time < duration:
         driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.END)
-        time.sleep(0.5)  # 너무 빠르게 하지 않도록 약간의 딜레이
+        time.sleep(2)  # 너무 빠르게 하지 않도록 약간의 딜레이
+        html = driver.page_source
+
+    # 6) BeautifulSoup 객체 생성(파서: html.parser)
+        soup = BeautifulSoup(html, "html.parser")
+
+        # 7) 검색 결과에서 제목 추출
+        results = soup.select("div.xdogm45")
+        cnt = 0
+        if results :
+            print("result ok")
+        for result in results:
+            # print(result)
+            cnt += 1
+            title = result.select_one("span._60z0ev0")
+            
+            if title is not None:
+                title_text = title.get_text().strip()
+                titles.append(title_text)
+        print(cnt)
 
 
     # 3초 대기 (변화 확인용)
     time.sleep(3)
+       # 5) 페이지의 HTML 소스 가져오기
 
-    # 페이지 로딩 대기
-    time.sleep(5)
 
-    # # 페이지의 HTML 소스 가져오기
-    # html = driver.page_source
-
-    # # BeautifulSoup 객체 생성(파서: html.paresr)
-    # soup = BeautifulSoup(html, "html.parser")
-
-    # results = soup.select("div.notranslate")
-    # company =  []
-
+    # 8) 추출한 결과 제목들을 별도의 txt 파일에 저장
+    with open("04_result.txt", "w", encoding="utf-8") as result_file:
+        for idx, title in enumerate(titles, 1):
+            result_file.write(f"{idx}. {title}\n")
 
     driver.quit()
 
