@@ -18,6 +18,8 @@ def delete_comment(request, comment_pk):
     return redirect('crawlings:index')
 
 def search(request):
+    back = Jusik.objects.all()
+    back.delete()
     keyword = request.POST.get('company')
     crawl_tossinvest_opinions(keyword)
     return redirect('crawlings:index')
