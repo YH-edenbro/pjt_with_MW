@@ -11,7 +11,7 @@
 </form>
 
 {% if comments %}
-<h2>회사명 : {{ company.company}},  주식 코드 :{{ company.company_code }}</h2>
+<h2> {{ company.company}} ({{ company.company_code }})</h2>
 <ul><span>수집된 댓글:</span>
     {% for comment in comments %}
     <form action="{% url "crawlings:delete_comment" comment.pk %}" method="POST">

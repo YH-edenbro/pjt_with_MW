@@ -5,10 +5,15 @@ from .utils import crawl_tossinvest_opinions
 # Create your views here.
 def index(request):
     comments = Jusik.objects.all()
-    context ={
-        'comments': comments,
-        'company': comments[0],
-    }
+    if comments: 
+        context ={
+            'comments': comments,
+            'company': comments[0],
+        }
+    else:
+        context = {
+            'comments' : comments
+        }
     return render(request, 'crawlings/index.html', context)
 
 
