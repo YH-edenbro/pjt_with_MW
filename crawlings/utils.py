@@ -54,7 +54,6 @@ def crawl_tossinvest_opinions(search_keyword: str):
     start_time = time.time()
     duration = 10  # 5초 동안만 스크롤
     titles = []  # 결과 제목을 저장할 리스트
-    cnt = 0
     
 
     # 처음 주식 코드 추출
@@ -69,6 +68,8 @@ def crawl_tossinvest_opinions(search_keyword: str):
     results = soup.select("div._1sivumi0")
     cnt = 0
     for result in results:
+        if cnt > 15 :
+            break
         # if result:
             # print(result)
         # print(result)
@@ -93,9 +94,10 @@ def crawl_tossinvest_opinions(search_keyword: str):
 
         # 7) 검색 결과에서 제목 추출
         results = soup.select("div.xdogm45")
-        cnt = 0
         for result in results:
             # print(result)
+            if cnt > 15 :
+                break
             cnt += 1
             title = result.select_one("span._60z0ev0")
             post_time = result.select("span.tw-1r5dc8g0")
@@ -103,16 +105,16 @@ def crawl_tossinvest_opinions(search_keyword: str):
             if title is not None:
                 title_text = title.get_text().strip()
                 real_post_time = post_time[1].get_text().strip()
-        if not Jusik.objects.filter(
-            company=stock_name,
-            company_code=stock_code,
-            comment=title_text
-            ).exists():
-                Jusik.objects.create(
-                    company=stock_name,
-                    company_code=stock_code,
-                    comment=title_text,
-                    created_at=real_post_time
-                )
+            if not Jusik.objects.filter(
+                company=stock_name,
+                company_code=stock_code,
+                comment=title_text
+                ).exists():
+                    Jusik.objects.create(
+                        company=stock_name,
+                        company_code=stock_code,
+                        comment=title_text,
+                        created_at=real_post_time
+                    )
 
     driver.quit()
