@@ -61,8 +61,13 @@ def crawl_tossinvest_opinions(search_keyword: str):
     # 3초 대기 (변화 확인용)
     time.sleep(3)
 
-    # 페이지 로딩 대기
-    time.sleep(5)
+    comment_elements = driver.find_elements(By.XPATH, '//span[contains(@class, "_60z0ev")]')
+
+    # 텍스트만 추출
+    for elem in comment_elements:
+        text = elem.text.strip()
+        if text:
+            print(text)
 
     # # 페이지의 HTML 소스 가져오기
     # html = driver.page_source
