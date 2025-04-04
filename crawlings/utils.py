@@ -57,15 +57,6 @@ def crawl_tossinvest_opinions(search_keyword: str):
 
     # 처음 주식 코드 추출
 
-
-
-
-
-
-
-
-
-
     while time.time() - start_time < duration:
         driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.END)
         time.sleep(2)  # 너무 빠르게 하지 않도록 약간의 딜레이
@@ -101,5 +92,3 @@ def crawl_tossinvest_opinions(search_keyword: str):
             result_file.write(f"{idx}. {title}\n")
 
     driver.quit()
-
-crawl_tossinvest_opinions("삼성전자")
