@@ -1,19 +1,23 @@
 from django.shortcuts import render, redirect
 from .models import Jusik
-from .utils import crawl_tossinvest_opinions
+from .utils import crawl_tossinvest_opinions, commet_analyze
 
 # Create your views here.
 def index(request):
     comments = Jusik.objects.all()
-    if comments: 
+    if comments:
+        result = commet_analyze() 
         context ={
             'comments': comments,
             'company': comments[0],
+            'result': result,
         }
     else:
         context = {
             'comments' : comments
         }
+    
+    
     return render(request, 'crawlings/index.html', context)
 
 

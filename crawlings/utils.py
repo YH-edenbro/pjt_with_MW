@@ -12,7 +12,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 from .models import Jusik
-
+from openai import OpenAI
 def crawl_tossinvest_opinions(search_keyword: str):
 
     # 크롬 드라이버 세팅
@@ -52,8 +52,7 @@ def crawl_tossinvest_opinions(search_keyword: str):
 
     # 스크롤 시작 시간 기록
     start_time = time.time()
-    duration = 10  # 5초 동안만 스크롤
-    titles = []  # 결과 제목을 저장할 리스트
+    duration = 6  # 6초 동안만 스크롤
     
 
     # 처음 주식 코드 추출
@@ -118,3 +117,38 @@ def crawl_tossinvest_opinions(search_keyword: str):
                     )
 
     driver.quit()
+
+
+# /// ChatGPT 프롬프트로 댓글 분석
+import sqlite3
+OPENAI_API_KEY= "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" 
+
+
+def commet_analyze():
+    # OpenAI 클라이언트 초기화
+    client = client = OpenAI(api_key=OPENAI_API_KEY)
+
+    # 1. Jusik 모델에서 모든 comment 가져오기
+    comments = Jusik.objects.values_list('comment', flat=True)
+
+    # 2. 문자열로 합치기
+    user_prompt = "\n".join(comment for comment in comments if comment)
+
+    # 3. GPT 호출
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": "당신은 입력되는 댓글들을 분석하여 공통적인 의견을 종합하고 3줄 안으로 요약하여 출력해줘야 합니다. 그 중 가장 주목할 의견을 앞에 강조해주세요."
+            },
+            {
+                "role": "user",
+                "content": user_prompt
+            }
+        ],
+        temperature=1,
+        max_tokens=512
+    )
+    result = response.choices[0].message.content
+    return result
