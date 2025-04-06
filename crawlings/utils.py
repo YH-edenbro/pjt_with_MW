@@ -121,7 +121,7 @@ def crawl_tossinvest_opinions(search_keyword: str):
 
 # /// ChatGPT 프롬프트로 댓글 분석
 import sqlite3
-OPENAI_API_KEY= "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" 
+OPENAI_API_KEY= "우리4반API키입력하시오" 
 
 
 def commet_analyze():
