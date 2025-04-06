@@ -4,7 +4,7 @@ from .utils import crawl_tossinvest_opinions, commet_analyze
 
 # Create your views here.
 def index(request):
-    comments = Jusik.objects.all()
+    comments = list(Jusik.objects.all()) 
     if comments:
         result = commet_analyze() 
         context ={
